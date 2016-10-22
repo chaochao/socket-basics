@@ -6,17 +6,19 @@ socket.on('connect', function() {
 
 socket.on('message', function(message) {
   console.log('this is message from server: ' + message.text);
-
-  $('.message').append('<p>'+message.text+'<p>');
+  var displayTime = moment.utc(message.timeStamp).local().format('H:mma');
+  $('.message').append('<p>' + displayTime + ' <Strong>' + message.text + '<Strong><p>');
 });
 
 
 var $form = $('#message-form');
 $form.on('submit', function(event) {
   event.preventDefault();
+  var currentTime = moment().valueOf();
   var $message = $form.find('input[name=message]');
   socket.emit('message', {
-    text: $message.val()
+    text: $message.val(),
+    timeStamp: currentTime 
   });
   $message.val('');
 
