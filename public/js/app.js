@@ -6,6 +6,8 @@ socket.on('connect', function() {
 
 socket.on('message', function(message) {
   console.log('this is message from server: ' + message.text);
+
+  $('.message').append('<p>'+message.text+'<p>');
 });
 
 

@@ -13,11 +13,11 @@ io.on('connection', function(socket) {
     console.log("message  received: " + message.text);
     //io.emit is for send to all including sender
     //send to all except sender
-    socket.broadcast.emit('message', message);
+    io.emit('message', message);
   })
 
   socket.emit('message', {
-    text: "server: Welcome"
+    text: "chat app demo"
   });
 });
 http.listen(PORT, function() {
