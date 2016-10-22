@@ -23,7 +23,8 @@ io.on('connection', function(socket) {
   var currentTime = moment().valueOf();
   socket.emit('message', {
     text: "Chat App",
-    timeStamp: currentTime
+    timeStamp: currentTime,
+    name: 'System'
   });
 });
 http.listen(PORT, function() {
