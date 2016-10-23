@@ -12,9 +12,9 @@ app.use(express.static(__dirname + '/public'));
 var clientInfo = {};
 
 function sendCurrentUser(socket) {
-  // BUG: each time when you refresh
-  // the socket id will change and same user will be treated
-  // as different person.
+  // BUG: each time when refresh
+  // socket id will change and same user will be treated
+  // as different user.
   if (typeof clientInfo[socket.id] !== 'undefined') {
     var user = [];
     var compareRoomName = clientInfo[socket.id].room;
