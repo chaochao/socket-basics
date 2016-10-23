@@ -27,7 +27,7 @@ io.on('connection', function(socket) {
     socket.join(loginInfo.room); // set as a group
     socket.broadcast.to(loginInfo.room).emit('message', {
       name: 'System',
-      text: loginInfo.name + 'joined the room',
+      text: loginInfo.name + ' joined the room',
       timeStamp: moment().valueOf()
     });
   });
