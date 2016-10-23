@@ -11,18 +11,39 @@ app.use(express.static(__dirname + '/public'));
 
 var clientInfo = {};
 
+function sendCurrentUser(socket) {
+  // BUG: each time when you refresh
+  // the socket id will change and same user will be treated
+  // as different person.
+  if (typeof clientInfo[socket.id] !== 'undefined') {
+    var user = [];
+    var compareRoomName = clientInfo[socket.id].room;
+    Object.keys(clientInfo).forEach(function(socketId) {
+      var peopleInTheRoom = clientInfo[socketId]
+      if (peopleInTheRoom.room === compareRoomName) {
+        user.push(peopleInTheRoom.name);
+      }
+    });
+    io.to(compareRoomName).emit('message', {
+      name: 'System',
+      text: 'currentUser: ' + user.join(', '),
+      timeStamp: moment.valueOf()
+    });
+  }
+}
+
 io.on('connection', function(socket) {
   console.log('user connect via socket io');
 
-  socket.on('disconnect', function(){
+  socket.on('disconnect', function() {
     var userInfo = clientInfo[socket.id]
-    if(typeof userInfo !== 'undefined'){
+    if (typeof userInfo !== 'undefined') {
       //leave the channel
       socket.leave(userInfo.room);
       //broadcast to other
       io.to(userInfo.room).emit('message', {
         name: 'System',
-        text:  userInfo.name +' leave the room',
+        text: userInfo.name + ' leave the room',
         timeStamp: moment.valueOf()
       });
     }
@@ -31,9 +52,13 @@ io.on('connection', function(socket) {
   // emit to all clients in the room
   socket.on('message', function(message) {
     console.log("message  received: " + message.timeStamp + ' ' + message.text + 'from: ' + message.name);
-    //io.emit is for send to all including sender
-    //send to al except sender
-    io.to(clientInfo[socket.id].room).emit('message', message);
+    if (message.text === '@currentUser') {
+      sendCurrentUser(socket);
+    } else {
+      //io.emit is for send to all including sender
+      //send to al except sender
+      io.to(clientInfo[socket.id].room).emit('message', message);
+    }
   });
   // store data in clientInfo obj and send data xx is joined
   socket.on('joinRoom', function(loginInfo) {
@@ -48,7 +73,7 @@ io.on('connection', function(socket) {
   });
 
   var currentTime = moment().valueOf();
-  
+
   socket.emit('message', {
     text: "Chat App",
     timeStamp: currentTime,
