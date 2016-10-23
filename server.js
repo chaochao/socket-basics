@@ -13,6 +13,21 @@ var clientInfo = {};
 
 io.on('connection', function(socket) {
   console.log('user connect via socket io');
+
+  socket.on('disconnect', function(){
+    var userInfo = clientInfo[socket.id]
+    if(typeof userInfo !== 'undefined'){
+      //leave the channel
+      socket.leave(userInfo.room);
+      //broadcast to other
+      io.to(userInfo.room).emit('message', {
+        name: 'System',
+        text:  userInfo.name +' leave the room',
+        timeStamp: moment.valueOf()
+      });
+    }
+  });
+
   // emit to all clients in the room
   socket.on('message', function(message) {
     console.log("message  received: " + message.timeStamp + ' ' + message.text + 'from: ' + message.name);
