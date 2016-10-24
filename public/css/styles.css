@@ -7,4 +7,10 @@
 
 a:link{
     text-decoration: none;
-    }
+}
+h1 {
+  margin: 24px 0;
+}
+.messages p {
+  margin: 5px 0;
+}
