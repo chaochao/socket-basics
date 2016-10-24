@@ -18,9 +18,11 @@ socket.on('connect', function() {
 socket.on('message', function(message) {
   console.log('this is message from server: ' + message.text);
   var displayTime = moment.utc(message.timeStamp).local().format('H:mma');
-
-  $('.message').append('<p><strong>' + message.name + ' ' + displayTime + '</strong></p>')
-  $('.message').append('<p>' + message.text + '<p>');
+  var $messages = jQuery('.messages');
+  var $message = jQuery('<li class="list-group-item"></li>');
+  $message.append('<p><strong>' + message.name + ' ' + displayTime + '</strong></p>')
+  $message.append('<p>' + message.text + '</p>');
+  $messages.append($message);
 });
 
 
